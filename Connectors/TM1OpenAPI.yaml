@@ -1,0 +1,1763 @@
+openapi: 3.0.0
+info:
+  title: The TM1 REST API
+  description: The Complete TM1 REST API Collection
+  version: 1.0.0
+servers:
+  - url: http://{{protocol}}
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+security:
+  - basicAuth: []
+tags:
+  - name: Cubes
+  - name: Dimensions
+  - name: Processes
+  - name: Chores
+  - name: Administration
+paths:
+  //{serverName}:{httpPortNumber}/api/v1/Cubes:
+    get:
+      tags:
+        - Cubes
+      summary: Cubes Get with Dimension
+      parameters:
+        - name: $select
+          in: query
+          schema:
+            type: string
+          example: Name
+        - name: $filter
+          in: query
+          schema:
+            type: string
+          example: 'Dimensions/any(dimension: dimension/Name eq ''{{dimensionName}}'')'
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Cubes/$count:
+    get:
+      tags:
+        - Cubes
+      summary: Cubes Count Including Control Objects
+      description: Retrieve the Cube Count
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic QWRtaW46YXBwbGU=
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Cubes('{cubeName}')/Dimensions:
+    get:
+      tags:
+        - Cubes
+      summary: Cube Get Dimensions
+      description: List the Dimensions in a Cube
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic QWRtaW46YXBwbGU=
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: cubeName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Cubes('{cubeName}'):
+    get:
+      tags:
+        - Cubes
+      summary: Cube Get
+      security:
+        - basicAuth: []
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: cubeName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Cubes('{cubeName}')/tm1.Update:
+    post:
+      tags:
+        - Cubes
+      summary: Cell Update
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n\t\"Cells\":[\r\n\t    {\"Tuple@odata.bind\":
+                [\r\n\t       
+                \"Dimensions('Version')/Hierarchies('Version')/Elements('Actual')\",\r\n\t       
+                \"Dimensions('Year')/Hierarchies('Year')/Elements('2018')\",\r\n\t       
+                \"Dimensions('Period')/Hierarchies('Period')/Elements('Jan')\",\r\n\t       
+                \"Dimensions('Currency')/Hierarchies('Currency')/Elements('Local')\",\r\n\t       
+                \"Dimensions('Region')/Hierarchies('Region')/Elements('England')\",\r\n\t       
+                \"Dimensions('Department')/Hierarchies('Department')/Elements('Executive
+                General and Administration')\",\r\n\t       
+                \"Dimensions('Account')/Hierarchies('Account')/Elements('Meals')\",\r\n\t       
+                \"Dimensions('General Ledger Measure')/Hierarchies('General
+                Ledger Measure')/Elements('Amount')\"\r\n\t        ]\r\n\t   
+                }\r\n    ],\r\n\t\"Value\":\"1234\"\r\n}"
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: cubeName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/ExecuteMDX:
+    post:
+      tags:
+        - Cubes
+      summary: MDX Execute
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n\t\"MDX\": \"SELECT {[Account].[Operating Profit]} ON
+                COLUMNS, {[Version].[Actual]} ON ROWS FROM [General
+                Ledger]\"\n}"
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: $expand
+          in: query
+          schema:
+            type: string
+          example: Cells
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Cubes('{cubeName}')/Views('{viewName}')/tm1.Execute:
+    post:
+      tags:
+        - Cubes
+      summary: View Execute
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: '""'
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: $expand
+          in: query
+          schema:
+            type: string
+          example: Cells
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: cubeName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: viewName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Cubes('System Info')/Views:
+    post:
+      tags:
+        - Cubes
+      summary: View Creation (Subset)
+      description: View Creation
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n   \"@odata.type\":\"ibm.tm1.api.v1.NativeView\",\r\n  
+                \"Name\":\"TempView\",\r\n   \"Columns\":[\r\n     
+                {\r\n         \"Subset@odata.bind\":\"Dimensions('System Info
+                Parameter')/Hierarchies('System Info
+                Parameter')/Subsets('Default')\"\r\n      }\r\n   ],\r\n  
+                \"Rows\":[\r\n      {\r\n        
+                \"Subset@odata.bind\":\"Dimensions('System Info
+                Measures')/Hierarchies('System Info
+                Measures')/Subsets('Default')\"\r\n      }\r\n   ],\r\n  
+                \"SuppressEmptyColumns\":false,\r\n  
+                \"SuppressEmptyRows\":false,\r\n  
+                \"FormatString\":\"0.#########\\fG|0|\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Cubes('Sales Quota')/Views:
+    post:
+      tags:
+        - Cubes
+      summary: View Create (Subset Dynamic)
+      description: Create a new View with, dynamic, Subsets
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n    \"@odata.type\": \"tm1.NativeView\",\r\n    \"Name\":
+                \"TempView\",\r\n    \"Rows\": [\r\n        {\r\n           
+                \"Subset\": {\r\n                \"Hierarchy@odata.bind\":
+                \"Dimensions('Employee')/Hierarchies('Employee')\",\r\n               
+                \"Expression\": \"[Employee].Members\"\r\n           
+                }\r\n        }\r\n    ],\r\n    \"Columns\": [\r\n       
+                {\r\n            \"Subset\": {\r\n               
+                \"Hierarchy@odata.bind\":
+                \"Dimensions('Period')/Hierarchies('Period')\",\r\n               
+                \"Expression\": \"[Period].Members\"\r\n            }\r\n       
+                }\r\n    ],\r\n    \"Titles\": [\r\n        {\r\n           
+                \"Subset\": {\r\n                \"Hierarchy@odata.bind\":
+                \"Dimensions('Version')/Hierarchies('Version')\",\r\n               
+                \"Expression\": \"[Version].Members\"\r\n           
+                },\r\n            \"Selected@odata.bind\":
+                \"Dimensions('Version')/Hierarchies('Version')/Elements('Actual')\"\r\n       
+                },\r\n        {\r\n            \"Subset\": {\r\n               
+                \"Hierarchy@odata.bind\":
+                \"Dimensions('Year')/Hierarchies('Year')\",\r\n               
+                \"Expression\": \"[Year].Members\"\r\n           
+                },\r\n            \"Selected@odata.bind\":
+                \"Dimensions('Year')/Hierarchies('Year')/Elements('2008')\"\r\n       
+                },\r\n        {\r\n            \"Subset\": {\r\n               
+                \"Hierarchy@odata.bind\": \"Dimensions('Sales Quota
+                Measure')/Hierarchies('Sales Quota
+                Measure')\",\r\n                \"Expression\": \"[Sales Quota
+                Measure].Members\"\r\n            },\r\n           
+                \"Selected@odata.bind\": \"Dimensions('Sales Quota
+                Measure')/Hierarchies('Sales Quota
+                Measure')/Elements('Amount')\"\r\n        }\r\n    ]\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Cubes('{cubeName}')/Views:
+    post:
+      tags:
+        - Cubes
+      summary: View Creation (MDX)
+      description: View Creation
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n   \"@odata.type\":\"ibm.tm1.api.v1.MDXView\",\r\n  
+                \"Name\":\"TempViewByMDX\",\r\n   \"MDX\":\"SELECT NON EMPTY
+                {[Period].[Jan], [Period].[Feb], [Period].[Mar]} ON COLUMNS, NON
+                EMPTY {[Account].AllMembers} ON ROWS FROM [General Ledger]
+                where([Version].[Actual], [General Ledger Measure].[Amount],
+                [Currency].[Local], [Region].[1], [Department].[1],
+                [Year].[2012])\"\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: cubeName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Cubes('System Info')/Views('TempView'):
+    patch:
+      tags:
+        - Cubes
+      summary: View Update
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n   \"Columns\":[\r\n      {\r\n        
+                \"Subset@odata.bind\":\"Dimensions('System Info
+                Parameter')/Hierarchies('System Info
+                Parameter')/Subsets('TempSubset1')\"\r\n      }\r\n   ]\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Cubes
+      summary: View Delete
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Dimensions:
+    get:
+      tags:
+        - Dimensions
+      summary: Dimensions Get
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Dimensions
+      summary: Dimension Create
+      description: Create a new Dimension
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: '"{\r\n    \"Name\": \"New Dimension\"\r\n}"'
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic QWRtaW46YXBwbGU=
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Dimensions/$count:
+    get:
+      tags:
+        - Dimensions
+      summary: Dimensions Count
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Dimensions('{dimensionName}'):
+    get:
+      tags:
+        - Dimensions
+      summary: Dimension Get
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: dimensionName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Dimensions('{dimensionName}')/Hierarchies:
+    get:
+      tags:
+        - Dimensions
+      summary: Dimension Get Hierarchies
+      parameters:
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: dimensionName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Dimensions('Account')/Hierarchies('Account')/Members:
+    get:
+      tags:
+        - Dimensions
+      summary: Dimension Element List
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: $select
+          in: query
+          schema:
+            type: string
+          example: Name,Ordinal,Weight
+        - name: $expand
+          in: query
+          schema:
+            type: string
+          example: >-
+            Parent($select=Name),Level($select=Number),Element($select=Name,Type,Attributes)
+        - name: $format
+          in: query
+          schema:
+            type: string
+          example: application/json;odata.metadata=none
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Dimensions('New Dimension'):
+    delete:
+      tags:
+        - Dimensions
+      summary: Dimension Delete
+      description: Delete a Dimension
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic QWRtaW46YXBwbGU=
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Dimensions('{dimensionName}')/Hierarchies('{hierarchyName}')/Elements('{elementName}'):
+    get:
+      tags:
+        - Dimensions
+      summary: Element Get
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: dimensionName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: hierarchyName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: elementName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Dimensions('{dimensionName}')/Hierarchies('{hierarchyName}')/Elements:
+    post:
+      tags:
+        - Dimensions
+      summary: Element Create
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: '"{\r\n    \"Name\": \"New Element\"\r\n}"'
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: dimensionName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: hierarchyName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Dimensions('{dimensionName}')/Hierarchies('{hierarchyName}')/ElementAttributes:
+    get:
+      tags:
+        - Dimensions
+      summary: Attributes Get
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: dimensionName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: hierarchyName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Processes('{processName}')/tm1.Execute:
+    post:
+      tags:
+        - Processes
+      summary: Process Execute
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n\t\"Parameters\": [{\"Name\":\"pWaitSec\",
+                \"Value\":\"5\"},{\"Name\":\"pDebug\", \"Value\":0}]\r\n}\r\n"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: processName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Processes('{processName}'):
+    get:
+      tags:
+        - Processes
+      summary: Process Get
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: processName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Processes:
+    get:
+      tags:
+        - Processes
+      summary: Processes Get
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Processes('Bedrock.Cube.Clone'):
+    patch:
+      tags:
+        - Processes
+      summary: Process Update
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n  \"@odata.context\": \"$metadata#Processes/$entity\",\n 
+                \"@odata.etag\": \"W/\\\"83015\\\"\",\n  \"Name\":
+                \"Bedrock.Cube.Clone\",\n  \"HasSecurityAccess\": true,\n 
+                \"PrologProcedure\": \"\\r\\n#****Begin: Generated
+                Statements***\\r\\n#****End: Generated
+                Statements****\\r\\n\\r\\n\\r\\n#####################################################################################\\r\\n##~~Copyright
+                bedrocktm1.org 2011 www.bedrocktm1.org/how-to-licence.php Ver
+                3.0.2~~##\\r\\n#####################################################################################\\r\\n\\r\\n#
+                This process replicates an existing cube.\\r\\n# Option to
+                include data and rules with the creation of the cube.\\r\\n# If
+                a target cube name is specIfied that already exists in the model
+                the cube will be destroyed and recreated.\\r\\n# If the target
+                cube is left blank or is the same as the source cube the cloned
+                cube will inherit the source\\r\\n# cube name with
+                \\\"_Clone\\\" appended.\\r\\n\\r\\n# Notes:\\r\\n# - As this TI
+                has a view as a data source it requires the implicit variables
+                NValue, SValue and Value_is_String\\r\\n# - To edit this TI
+                without Vizier either a tmp cube with 24 dims is needed as the
+                preview data source or set the data\\r\\n#   source to ASCII and
+                manually edit the TI in notepad after saving to add back the
+                required implicit view variables\\r\\n\\r\\n\\r\\n### Constants
+                ###\\r\\n\\r\\ncProcess = 'Bedrock.Cube.Clone';\\r\\ncTimeStamp
+                = TimSt( Now, '\\\\Y\\\\m\\\\d\\\\h\\\\i\\\\s'
+                );\\r\\nsRandomInt = NumberToString( INT( RAND( ) * 1000
+                ));\\r\\ncDebugFile = GetProcessErrorFileDirectory | cProcess |
+                '.' | cTimeStamp | '.' | sRandomInt ;\\r\\n\\r\\n\\r\\n###
+                Initialise Debug ###\\r\\n\\r\\nIf( pDebug >= 1 );\\r\\n\\r\\n 
+                # Set debug file name\\r\\n  sDebugFile = cDebugFile |
+                'Prolog.debug';\\r\\n\\r\\n  # Log start time\\r\\n 
+                AsciiOutput( sDebugFile, 'Process Started: ' | TimSt( Now,
+                '\\\\d-\\\\m-\\\\Y \\\\h:\\\\i:\\\\s' ) );\\r\\n\\r\\n  # Log
+                parameters\\r\\n  AsciiOutput( sDebugFile, 'Parameters:
+                pSourceCube   : ' | pSourceCube );\\r\\n  AsciiOutput(
+                sDebugFile, '            pTargetCube   : ' | pTargetCube
+                );\\r\\n  AsciiOutput( sDebugFile, '            pIncludeRules :
+                ' | NumberToString( pIncludeRules ) );\\r\\n  AsciiOutput(
+                sDebugFile, '            pIncludeData  : ' | NumberToString(
+                pIncludeData ) );\\r\\n  AsciiOutput( sDebugFile, '           
+                pSourceView   : ' | pSourceView );\\r\\n  AsciiOutput(
+                sDebugFile, '            pRuleValues   : ' | NumberToString(
+                pRuleValues ) );\\r\\n\\r\\nEndIf;\\r\\n\\r\\n\\r\\n###
+                Initialise ###\\r\\n\\r\\nnDataCheck = 0;\\r\\n\\r\\n\\r\\n###
+                Validate Parameters ###\\r\\n\\r\\nnErrors = 0;\\r\\n\\r\\n#
+                Validate source cube\\r\\nIf( pSourceCube @= '' % CubeExists(
+                pSourceCube ) = 0 );\\r\\n  nErrors = 1;\\r\\n  sMessage =
+                'Invalid source cube specified: ' | pSourceCube;\\r\\n  If(
+                pDebug >= 1 );\\r\\n    AsciiOutput( sDebugFile, sMessage
+                );\\r\\n  EndIf;\\r\\n  DataSourceType = 'NULL';\\r\\n 
+                ItemReject( sMessage );\\r\\nEndIf;\\r\\n\\r\\n# Validate target
+                cube\\r\\nIf( pTargetCube @= '' % pTargetCube @= pSourceCube
+                );\\r\\n  pTargetCube = pSourceCube |
+                '_Clone';\\r\\nEndIf;\\r\\n\\r\\n# Validate View\\r\\nIf(
+                pIncludeData = 1 & pSourceView @<> '' );\\r\\n  If( ViewExists(
+                pSourceCube, pSourceView ) = 0 );\\r\\n    nErrors = 1;\\r\\n   
+                sMessage = 'Invalid view specified: ' | pSourceView | ' for
+                cube: ' | pSourceCube;\\r\\n    If( pDebug >= 1 );\\r\\n     
+                AsciiOutput( sDebugFile, sMessage );\\r\\n    EndIf;\\r\\n   
+                DataSourceType = 'NULL';\\r\\n    ItemReject( sMessage );\\r\\n 
+                EndIf;\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### Determine number of dims
+                in source cube ###\\r\\n\\r\\nnDimensionCount = 0;\\r\\nWhile(
+                TabDim( pSourceCube, nDimensionCount + 1 ) @<> '' );\\r\\n 
+                nDimensionCount = nDimensionCount + 1;\\r\\nEnd;\\r\\n\\r\\nIf(
+                nDimensionCount > 27 );\\r\\n  nErrors = 1;\\r\\n  sMessage =
+                'Cube has too many dimensions: ' | pSourceCube | ' max 27 dims
+                catered for, TI must be altered to accomodate.';\\r\\n  If(
+                pDebug >= 1 );\\r\\n    AsciiOutput( sDebugFile, sMessage
+                );\\r\\n  EndIf;\\r\\n  DataSourceType = 'NULL';\\r\\n 
+                ItemReject( sMessage );\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### Check
+                to see if target cube exists ###\\r\\n\\r\\nIf( CubeExists(
+                pTargetCube ) = 1 );\\r\\n  If( pDebug <= 1 );\\r\\n   
+                CubeDestroy( pTargetCube );\\r\\n 
+                EndIf;\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### Determine dimensions in
+                source cube ###\\r\\n\\r\\nsDim1 = TabDim( pSourceCube, 1
+                );\\r\\nsDim2 = TabDim( pSourceCube, 2 );\\r\\nsDim3 = TabDim(
+                pSourceCube, 3 );\\r\\nsDim4 = TabDim( pSourceCube, 4
+                );\\r\\nsDim5 = TabDim( pSourceCube, 5 );\\r\\nsDim6 = TabDim(
+                pSourceCube, 6 );\\r\\nsDim7 = TabDim( pSourceCube, 7
+                );\\r\\nsDim8 = TabDim( pSourceCube, 8 );\\r\\nsDim9 = TabDim(
+                pSourceCube, 9 );\\r\\nsDim10 = TabDim( pSourceCube, 10
+                );\\r\\nsDim11 = TabDim( pSourceCube, 11 );\\r\\nsDim12 =
+                TabDim( pSourceCube, 12 );\\r\\nsDim13 = TabDim( pSourceCube, 13
+                );\\r\\nsDim14 = TabDim( pSourceCube, 14 );\\r\\nsDim15 =
+                TabDim( pSourceCube, 15 );\\r\\nsDim16 = TabDim( pSourceCube, 16
+                );\\r\\nsDim17 = TabDim( pSourceCube, 17 );\\r\\nsDim18 =
+                TabDim( pSourceCube, 18 );\\r\\nsDim19 = TabDim( pSourceCube, 19
+                );\\r\\nsDim20 = TabDim( pSourceCube, 20 );\\r\\nsDim21 =
+                TabDim( pSourceCube, 21 );\\r\\nsDim22 = TabDim( pSourceCube, 22
+                );\\r\\nsDim23 = TabDim( pSourceCube, 23 );\\r\\nsDim24 =
+                TabDim( pSourceCube, 24 );\\r\\nsDim25 = TabDim( pSourceCube, 25
+                );\\r\\nsDim26 = TabDim( pSourceCube, 26 );\\r\\nsDim27 =
+                TabDim( pSourceCube, 27 );\\r\\n\\r\\n### Create target cube
+                ###\\r\\n\\r\\nIf( pDebug <= 1 );\\r\\n\\r\\n  If(
+                nDimensionCount = 2 );\\r\\n    CubeCreate( pTargetCube, sDim1,
+                sDim2 );\\r\\n  ElseIf( nDimensionCount = 3 );\\r\\n   
+                CubeCreate( pTargetCube, sDim1, sDim2, sDim3 );\\r\\n  ElseIf(
+                nDimensionCount = 4 );\\r\\n    CubeCreate( pTargetCube, sDim1,
+                sDim2, sDim3, sDim4 );\\r\\n  ElseIf( nDimensionCount = 5
+                );\\r\\n    CubeCreate( pTargetCube, sDim1, sDim2, sDim3, sDim4,
+                sDim5 );\\r\\n  ElseIf( nDimensionCount = 6 );\\r\\n   
+                CubeCreate( pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5,
+                sDim6 );\\r\\n  ElseIf( nDimensionCount = 7 );\\r\\n   
+                CubeCreate( pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5,
+                sDim6, sDim7 );\\r\\n  ElseIf( nDimensionCount = 8 );\\r\\n   
+                CubeCreate( pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5,
+                sDim6, sDim7, sDim8 );\\r\\n  ElseIf( nDimensionCount = 9
+                );\\r\\n    CubeCreate( pTargetCube, sDim1, sDim2, sDim3, sDim4,
+                sDim5, sDim6, sDim7, sDim8, sDim9 );\\r\\n  ElseIf(
+                nDimensionCount = 10 );\\r\\n    CubeCreate( pTargetCube, sDim1,
+                sDim2, sDim3, sDim4, sDim5, sDim6, sDim7, sDim8, sDim9, sDim10
+                );\\r\\n  ElseIf( nDimensionCount = 11 );\\r\\n    CubeCreate(
+                pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5, sDim6, sDim7,
+                sDim8, sDim9, sDim10, sDim11 );\\r\\n  ElseIf( nDimensionCount =
+                12 );\\r\\n    CubeCreate( pTargetCube, sDim1, sDim2, sDim3,
+                sDim4, sDim5, sDim6, sDim7, sDim8, sDim9, sDim10, sDim11, sDim12
+                );\\r\\n  ElseIf( nDimensionCount = 13 );\\r\\n    CubeCreate(
+                pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5, sDim6, sDim7,
+                sDim8, sDim9, sDim10, sDim11, sDim12, sDim13 );\\r\\n  ElseIf(
+                nDimensionCount = 14 );\\r\\n    CubeCreate( pTargetCube, sDim1,
+                sDim2, sDim3, sDim4, sDim5, sDim6, sDim7, sDim8, sDim9, sDim10,
+                sDim11, sDim12, sDim13, sDim14 );\\r\\n  ElseIf( nDimensionCount
+                = 15 );\\r\\n    CubeCreate( pTargetCube, sDim1, sDim2, sDim3,
+                sDim4, sDim5, sDim6, sDim7, sDim8, sDim9, sDim10, sDim11,
+                sDim12, sDim13, sDim14, sDim15 );\\r\\n  ElseIf( nDimensionCount
+                = 16 );\\r\\n    CubeCreate( pTargetCube, sDim1, sDim2, sDim3,
+                sDim4, sDim5, sDim6, sDim7, sDim8, sDim9, sDim10, sDim11,
+                sDim12, sDim13, sDim14, sDim15, sDim16 );\\r\\n  ElseIf(
+                nDimensionCount = 17 );\\r\\n    CubeCreate( pTargetCube, sDim1,
+                sDim2, sDim3, sDim4, sDim5, sDim6, sDim7, sDim8, sDim9, sDim10,
+                sDim11, sDim12, sDim13, sDim14, sDim15,
+                sDim16,\\r\\n                sDim17 );\\r\\n  ElseIf(
+                nDimensionCount = 18 );\\r\\n    CubeCreate( pTargetCube, sDim1,
+                sDim2, sDim3, sDim4, sDim5, sDim6, sDim7, sDim8, sDim9, sDim10,
+                sDim11, sDim12, sDim13, sDim14, sDim15,
+                sDim16,\\r\\n                sDim17, sDim18 );\\r\\n  ElseIf(
+                nDimensionCount = 19 );\\r\\n    CubeCreate( pTargetCube, sDim1,
+                sDim2, sDim3, sDim4, sDim5, sDim6, sDim7, sDim8, sDim9, sDim10,
+                sDim11, sDim12, sDim13, sDim14, sDim15,
+                sDim16,\\r\\n                sDim17, sDim18, sDim19 );\\r\\n 
+                ElseIf( nDimensionCount = 20 );\\r\\n    CubeCreate(
+                pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5, sDim6, sDim7,
+                sDim8, sDim9, sDim10, sDim11, sDim12, sDim13, sDim14, sDim15,
+                sDim16,\\r\\n                sDim17, sDim18, sDim19, sDim20
+                );\\r\\n  ElseIf( nDimensionCount = 21 );\\r\\n    CubeCreate(
+                pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5, sDim6, sDim7,
+                sDim8, sDim9, sDim10, sDim11, sDim12, sDim13, sDim14, sDim15,
+                sDim16,\\r\\n                sDim17, sDim18, sDim19, sDim20,
+                sDim21 );\\r\\n  ElseIf( nDimensionCount = 22 );\\r\\n   
+                CubeCreate( pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5,
+                sDim6, sDim7, sDim8, sDim9, sDim10, sDim11, sDim12, sDim13,
+                sDim14, sDim15, sDim16,\\r\\n                sDim17, sDim18,
+                sDim19, sDim20, sDim21, sDim22 );\\r\\n  ElseIf( nDimensionCount
+                = 23 );\\r\\n    CubeCreate( pTargetCube, sDim1, sDim2, sDim3,
+                sDim4, sDim5, sDim6, sDim7, sDim8, sDim9, sDim10, sDim11,
+                sDim12, sDim13, sDim14, sDim15, sDim16,\\r\\n               
+                sDim17, sDim18, sDim19, sDim20, sDim21, sDim22, sDim23 );\\r\\n 
+                ElseIf( nDimensionCount = 24 );\\r\\n    CubeCreate(
+                pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5, sDim6, sDim7,
+                sDim8, sDim9, sDim10, sDim11, sDim12, sDim13, sDim14, sDim15,
+                sDim16,\\r\\n                sDim17, sDim18, sDim19, sDim20,
+                sDim21, sDim22, sDim23, sDim24 );\\r\\n  ElseIf( nDimensionCount
+                = 25 );\\r\\n    CubeCreate( pTargetCube, sDim1, sDim2, sDim3,
+                sDim4, sDim5, sDim6, sDim7, sDim8, sDim9, sDim10, sDim11,
+                sDim12, sDim13, sDim14, sDim15, sDim16,\\r\\n               
+                sDim17, sDim18, sDim19, sDim20, sDim21, sDim22, sDim23, sDim24,
+                sDim25 );\\r\\n  ElseIf( nDimensionCount = 26 );\\r\\n   
+                CubeCreate( pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5,
+                sDim6, sDim7, sDim8, sDim9, sDim10, sDim11, sDim12, sDim13,
+                sDim14, sDim15, sDim16,\\r\\n                sDim17, sDim18,
+                sDim19, sDim20, sDim21, sDim22, sDim23, sDim24, sDim25, sDim26
+                );\\r\\n  ElseIf( nDimensionCount = 27 );\\r\\n    CubeCreate(
+                pTargetCube, sDim1, sDim2, sDim3, sDim4, sDim5, sDim6, sDim7,
+                sDim8, sDim9, sDim10, sDim11, sDim12, sDim13, sDim14, sDim15,
+                sDim16,\\r\\n                sDim17, sDim18, sDim19, sDim20,
+                sDim21, sDim22, sDim23, sDim24, sDim25, sDim26, sDim27 );\\r\\n 
+                EndIf;\\r\\n\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### Assign Datasource
+                ###\\r\\n\\r\\nIf( pIncludeData = 1 );\\r\\n\\r\\n 
+                DataSourceType = 'VIEW';\\r\\n  DatasourceNameForServer =
+                pSourceCube;\\r\\n  DatasourceNameForClient =
+                pSourceCube;\\r\\n  NValue = 0;\\r\\n  SValue = '0';\\r\\n 
+                Value_is_String = 0;\\r\\n\\r\\n  sSourceView =
+                pSourceView;\\r\\n  If( sSourceView @= '' );\\r\\n   
+                sSourceView = '}' | cProcess;\\r\\n    If( ViewExists(
+                pSourceCube, sSourceView ) = 0 );\\r\\n      ViewCreate(
+                pSourceCube, sSourceView );\\r\\n    EndIf;\\r\\n 
+                EndIf;\\r\\n\\r\\n  ViewExtractSkipCalcsSet( pSourceCube,
+                sSourceView, 1 );\\r\\n  ViewExtractSkipRuleValuesSet(
+                pSourceCube, sSourceView, pRuleValues );\\r\\n 
+                ViewExtractSkipZeroesSet( pSourceCube, sSourceView, 1 );\\r\\n 
+                DatasourceCubeView = sSourceView;\\r\\nElse;\\r\\n  nDataCheck =
+                nDataCheck + 1;\\r\\n  DataSourceType =
+                'NULL';\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### End Prolog ###\",\n 
+                \"MetadataProcedure\": \"\\r\\n#****Begin: Generated
+                Statements***\\r\\n#****End: Generated
+                Statements****\\r\\n\",\n  \"DataProcedure\":
+                \"\\r\\n#****Begin: Generated Statements***\\r\\n#****End:
+                Generated
+                Statements****\\r\\n\\r\\n\\r\\n#####################################################################################\\r\\n##~~Copyright
+                bedrocktm1.org 2011 www.bedrocktm1.org/how-to-licence.php Ver
+                3.0.2~~##\\r\\n#####################################################################################\\r\\n\\r\\n\\r\\n###
+                Check for error in prolog ###\\r\\n\\r\\nIf( nErrors > 0
+                );\\r\\n  ProcessBreak;\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### Check
+                whether only cube structure being copied or also cube data
+                ###\\r\\n\\r\\nIf( pIncludeData = 0 );\\r\\n 
+                ProcessBreak;\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### Write data from
+                source cube to target cube ###\\r\\n\\r\\n# Selects the correct
+                CellPut formula depending upon the number of dimensions in the
+                cube\\r\\n# and whether the value is numeric or string ( max 24
+                dims catered for in this code )\\r\\n# value type determined by
+                element type of last dimension in cube\\r\\n\\r\\nIf( pDebug <=
+                1 );\\r\\n\\r\\n  If( nDimensionCount = 2 );\\r\\n    sElType =
+                DType( sDim2, v2 );\\r\\n    If( sElType @<> 'S' );\\r\\n     
+                CellPutN( Numbr( v3 ), pTargetCube, v1, v2 );\\r\\n   
+                Else;\\r\\n      CellPutS( v3, pTargetCube, v1, v2 );\\r\\n   
+                EndIf;\\r\\n  ElseIf( nDimensionCount = 3 );\\r\\n    sElType =
+                DType( sDim3, v3 );\\r\\n    If( sElType @<> 'S' );\\r\\n     
+                CellPutN( Numbr( v4 ), pTargetCube, v1, v2, v3 );\\r\\n   
+                Else;\\r\\n      CellPutS( v4, pTargetCube, v1, v2, v3
+                );\\r\\n    EndIf;\\r\\n  ElseIf( nDimensionCount = 4
+                );\\r\\n    sElType = DType( sDim4, v4 );\\r\\n    If( sElType
+                @<> 'S' );\\r\\n      CellPutN( Numbr( v5 ), pTargetCube, v1,
+                v2, v3, v4 );\\r\\n    Else;\\r\\n      CellPutS( v5,
+                pTargetCube, v1, v2, v3, v4 );\\r\\n    EndIf;\\r\\n  ElseIf(
+                nDimensionCount = 5 );\\r\\n    sElType = DType( sDim5, v5
+                );\\r\\n    If( sElType @<> 'S' );\\r\\n      CellPutN( Numbr(
+                v6 ), pTargetCube, v1, v2, v3, v4, v5 );\\r\\n   
+                Else;\\r\\n      CellPutS( v6, pTargetCube, v1, v2, v3, v4, v5
+                );\\r\\n    EndIf;\\r\\n  ElseIf( nDimensionCount = 6
+                );\\r\\n    sElType = DType( sDim6, v6 );\\r\\n    If( sElType
+                @<> 'S' );\\r\\n      CellPutN( Numbr( v7 ), pTargetCube, v1,
+                v2, v3, v4, v5, v6 );\\r\\n    Else;\\r\\n      CellPutS( v7,
+                pTargetCube, v1, v2, v3, v4, v5, v6 );\\r\\n    EndIf;\\r\\n 
+                ElseIf( nDimensionCount = 7 );\\r\\n    sElType = DType( sDim7,
+                v7 );\\r\\n    If( sElType @<> 'S' );\\r\\n      CellPutN(
+                Numbr( v8 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7 );\\r\\n   
+                Else;\\r\\n      CellPutS( v8, pTargetCube, v1, v2, v3, v4, v5,
+                v6, v7 );\\r\\n    EndIf;\\r\\n  ElseIf( nDimensionCount = 8
+                );\\r\\n    sElType = DType( sDim8, v8 );\\r\\n    If( sElType
+                @<> 'S' );\\r\\n      CellPutN( Numbr( v9 ), pTargetCube, v1,
+                v2, v3, v4, v5, v6, v7, v8 );\\r\\n    Else;\\r\\n     
+                CellPutS( v9, pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8
+                );\\r\\n    EndIf;\\r\\n  ElseIf( nDimensionCount = 9
+                );\\r\\n    sElType = DType( sDim9, v9 );\\r\\n    If( sElType
+                @<> 'S' );\\r\\n      CellPutN( Numbr( v10 ), pTargetCube, v1,
+                v2, v3, v4, v5, v6, v7, v8, v9 );\\r\\n    Else;\\r\\n     
+                CellPutS( v10, pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9
+                );\\r\\n    EndIf;\\r\\n  ElseIf( nDimensionCount = 10
+                );\\r\\n    sElType = DType( sDim10, v10 );\\r\\n    If( sElType
+                @<> 'S' );\\r\\n      CellPutN( Numbr( v11 ), pTargetCube, v1,
+                v2, v3, v4, v5, v6, v7, v8, v9, v10 );\\r\\n    Else;\\r\\n     
+                CellPutS( v11, pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9,
+                v10 );\\r\\n    EndIf;\\r\\n  ElseIf( nDimensionCount = 11
+                );\\r\\n    sElType = DType( sDim11, v11 );\\r\\n    If( sElType
+                @<> 'S' );\\r\\n      CellPutN( Numbr( v12 ), pTargetCube, v1,
+                v2, v3, v4, v5, v6, v7, v8, v9, v10, v11 );\\r\\n   
+                Else;\\r\\n      CellPutS( v12, pTargetCube, v1, v2, v3, v4, v5,
+                v6, v7, v8, v9, v10, v11 );\\r\\n    EndIf;\\r\\n  ElseIf(
+                nDimensionCount = 12 );\\r\\n    sElType = DType( sDim12, v12
+                );\\r\\n    If( sElType @<> 'S' );\\r\\n      CellPutN( Numbr(
+                v13 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,
+                v11, v12 );\\r\\n    Else;\\r\\n      CellPutS( v13,
+                pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12
+                );\\r\\n    EndIf;\\r\\n  ElseIf( nDimensionCount = 13
+                );\\r\\n    sElType = DType( sDim13, v13 );\\r\\n    If( sElType
+                @<> 'S' );\\r\\n      CellPutN( Numbr( v14 ), pTargetCube, v1,
+                v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13 );\\r\\n   
+                Else;\\r\\n      CellPutS( v14, pTargetCube, v1, v2, v3, v4, v5,
+                v6, v7, v8, v9, v10, v11, v12, v13 );\\r\\n    EndIf;\\r\\n 
+                ElseIf( nDimensionCount = 14 );\\r\\n    sElType = DType(
+                sDim14, v14 );\\r\\n    If( sElType @<> 'S' );\\r\\n     
+                CellPutN( Numbr( v15 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7,
+                v8, v9, v10, v11, v12, v13, v14 );\\r\\n    Else;\\r\\n     
+                CellPutS( v15, pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9,
+                v10, v11, v12, v13, v14 );\\r\\n    EndIf;\\r\\n  ElseIf(
+                nDimensionCount = 15 );\\r\\n    sElType = DType( sDim15, v15
+                );\\r\\n    If( sElType @<> 'S' );\\r\\n      CellPutN( Numbr(
+                v16 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,
+                v11, v12, v13, v14, v15 );\\r\\n    Else;\\r\\n      CellPutS(
+                v16, pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11,
+                v12, v13, v14, v15 );\\r\\n    EndIf;\\r\\n  ElseIf(
+                nDimensionCount = 16 );\\r\\n    sElType = DType( sDim16, v16
+                );\\r\\n    If( sElType @<> 'S' );\\r\\n      CellPutN( Numbr(
+                v17 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,
+                v11, v12, v13, v14, v15, v16 );\\r\\n    Else;\\r\\n     
+                CellPutS( v17, pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9,
+                v10, v11, v12, v13, v14, v15, v16 );\\r\\n    EndIf;\\r\\n 
+                ElseIf( nDimensionCount = 17 );\\r\\n    sElType = DType(
+                sDim17, v17 );\\r\\n    If( sElType @<> 'S' );\\r\\n     
+                CellPutN( Numbr( v18 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7,
+                v8, v9, v10, v11, v12, v13, v14, v15, v16, v17 );\\r\\n   
+                Else;\\r\\n      CellPutS( v18, pTargetCube, v1, v2, v3, v4, v5,
+                v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17
+                );\\r\\n    EndIf;\\r\\n  ElseIf( nDimensionCount = 18
+                );\\r\\n     sElType = DType( sDim18, v18 );\\r\\n    If(
+                sElType @<> 'S' );\\r\\n      CellPutN( Numbr( v19 ),
+                pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12,
+                v13, v14, v15, v16, v17, v18 );\\r\\n    Else;\\r\\n     
+                CellPutS( v19, pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9,
+                v10, v11, v12, v13, v14, v15, v16, v17, v18 );\\r\\n   
+                EndIf;\\r\\n  ElseIf( nDimensionCount = 19 );\\r\\n     sElType
+                = DType( sDim19, v19 );\\r\\n    If( sElType @<> 'S'
+                );\\r\\n      CellPutN( Numbr( v20 ), pTargetCube, v1, v2, v3,
+                v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17,
+                v18, v19 );\\r\\n    Else;\\r\\n      CellPutS( v20,
+                pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12,
+                v13, v14, v15, v16, v17, v18, v19 );\\r\\n    EndIf;\\r\\n 
+                ElseIf( nDimensionCount = 20 );\\r\\n     sElType = DType(
+                sDim20, v20 );\\r\\n    If( sElType @<> 'S' );\\r\\n     
+                CellPutN( Numbr( v21 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7,
+                v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20
+                );\\r\\n    Else;\\r\\n      CellPutS( v21, pTargetCube, v1, v2,
+                v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16,
+                v17, v18, v19, v20 );\\r\\n    EndIf;\\r\\n  ElseIf(
+                nDimensionCount = 21 );\\r\\n     sElType = DType( sDim21, v21
+                );\\r\\n    If( sElType @<> 'S' );\\r\\n      CellPutN( Numbr(
+                v22 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,
+                v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21
+                );\\r\\n    Else;\\r\\n      CellPutS( v22, pTargetCube, v1, v2,
+                v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16,
+                v17, v18, v19, v20, v21 );\\r\\n    EndIf;\\r\\n  ElseIf(
+                nDimensionCount = 22 );\\r\\n     sElType = DType( sDim22, v22
+                );\\r\\n    If( sElType @<> 'S' );\\r\\n      CellPutN( Numbr(
+                v23 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,
+                v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22
+                );\\r\\n    Else;\\r\\n      CellPutS( v23, pTargetCube, v1, v2,
+                v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16,
+                v17, v18, v19, v20, v21, v22 );\\r\\n    EndIf;\\r\\n  ElseIf(
+                nDimensionCount = 23 );\\r\\n     sElType = DType( sDim23, v23
+                );\\r\\n    If( sElType @<> 'S' );\\r\\n      CellPutN( Numbr(
+                v24 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,
+                v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21,
+                v22,\\r\\n      v23 );\\r\\n    Else;\\r\\n      CellPutS( v24,
+                pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12,
+                v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23
+                );\\r\\n    EndIf;\\r\\n  ElseIf( nDimensionCount = 24
+                );\\r\\n     sElType = DType( sDim24, v24 );\\r\\n    If(
+                sElType @<> 'S' );\\r\\n      CellPutN( Numbr( v25 ),
+                pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12,
+                v13, v14, v15, v16, v17, v18, v19, v20, v21, v22,\\r\\n     
+                v23, v24 );\\r\\n    Else;\\r\\n      CellPutS( v25,
+                pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12,
+                v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24
+                );\\r\\n    EndIf;\\r\\n  ElseIf( nDimensionCount = 25
+                );\\r\\n     sElType = DType( sDim25, v26 );\\r\\n    If(
+                sElType @<> 'S' );\\r\\n      CellPutN( Numbr( v26 ),
+                pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12,
+                v13, v14, v15, v16, v17, v18, v19, v20, v21, v22,\\r\\n     
+                v23, v24, v25 );\\r\\n    Else;\\r\\n      CellPutS( v26,
+                pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12,
+                v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23,
+                v24,\\r\\n            v25 );\\r\\n    EndIf;\\r\\n  ElseIf(
+                nDimensionCount = 26 );\\r\\n     sElType = DType( sDim26, v27
+                );\\r\\n    If( sElType @<> 'S' );\\r\\n      CellPutN( Numbr(
+                v27 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,
+                v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21,
+                v22,\\r\\n      v23, v24, v25, v26 );\\r\\n    Else;\\r\\n     
+                CellPutS( v27, pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9,
+                v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22,
+                v23, v24,\\r\\n      v25, v26 );\\r\\n    EndIf;\\r\\n  ElseIf(
+                nDimensionCount = 27 );\\r\\n     sElType = DType( sDim27, v28
+                );\\r\\n    If( sElType @<> 'S' );\\r\\n      CellPutN( Numbr(
+                v28 ), pTargetCube, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,
+                v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21,
+                v22,\\r\\n      v23, v24, v25, v26, v27 );\\r\\n   
+                Else;\\r\\n      CellPutS( v28, pTargetCube, v1, v2, v3, v4, v5,
+                v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18,
+                v19, v20, v21, v22, v23, v24,\\r\\n      v25, v26 );\\r\\n   
+                EndIf;\\r\\n\\r\\n  EndIf;\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### End
+                Data ###\",\n  \"EpilogProcedure\": \"\\r\\n#****Begin:
+                Generated Statements***\\r\\n#****End: Generated
+                Statements****\\r\\n\\r\\n\\r\\n#####################################################################################\\r\\n##~~Copyright
+                bedrocktm1.org 2011 www.bedrocktm1.org/how-to-licence.php Ver
+                3.0.2~~##\\r\\n#####################################################################################\\r\\n\\r\\n\\r\\n###
+                Initialise Debug ###\\r\\n\\r\\nIf( pDebug >= 1 );\\r\\n\\r\\n 
+                # Set debug file name\\r\\n  sDebugFile = cDebugFile |
+                'Epilog.debug';\\r\\n\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### Attach
+                rules to cloned cube ###\\r\\n\\r\\nIf( nErrors = 0 &
+                pIncludeRules = 1 );\\r\\n  sRuleFile = pSourceCube |
+                '.rux';\\r\\n  If( FileExists( sRuleFile ) = 1 );\\r\\n    If(
+                pDebug >= 1 );\\r\\n      AsciiOutput( sDebugFile, 'Rules file
+                found' );\\r\\n    EndIf;\\r\\n    If( pDebug <= 1 );\\r\\n     
+                RuleLoadFromFile( pTargetCube, sRuleFile );\\r\\n   
+                EndIf;\\r\\n  Else;\\r\\n    If( pDebug >= 1 );\\r\\n     
+                AsciiOutput( sDebugFile, 'Cannot attach rule.  No rules exist in
+                source cube: ' | pSourceCube );\\r\\n    EndIf;\\r\\n 
+                EndIf;\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### Finalise Debug
+                ###\\r\\n\\r\\nIf( pDebug >= 1 );\\r\\n\\r\\n  # Log
+                errors\\r\\n  If( nErrors <> 0 );\\r\\n    AsciiOutput(
+                sDebugFile, 'Errors Occurred' );\\r\\n  EndIf;\\r\\n\\r\\n  #
+                Log finish time\\r\\n  AsciiOutput( sDebugFile, 'Process
+                Finished: ' | TimSt( Now, '\\\\d-\\\\m-\\\\Y \\\\h:\\\\i:\\\\s'
+                ) );\\r\\n\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### If errors occurred
+                terminate process with a major error status ###\\r\\n\\r\\nIf(
+                nErrors <> 0 );\\r\\n 
+                ProcessQuit;\\r\\nEndIf;\\r\\n\\r\\n\\r\\n### End Epilog
+                ###\",\n  \"DataSource\": {\n    \"Type\": \"TM1CubeView\",\n   
+                \"dataSourceNameForClient\": \"Bedrock Test\",\n   
+                \"dataSourceNameForServer\": \"Bedrock Test\",\n    \"view\":
+                \"Temp\"\n  },\n  \"Parameters\": [\n    {\n      \"Name\":
+                \"pSourceCube\",\n      \"Prompt\": \"Source Cube\",\n     
+                \"Value\": \"\",\n      \"Type\": \"String\"\n    },\n   
+                {\n      \"Name\": \"pTargetCube\",\n      \"Prompt\": \"Target
+                Cube to create/re-create\",\n      \"Value\": \"\",\n     
+                \"Type\": \"String\"\n    },\n    {\n      \"Name\":
+                \"pIncludeRules\",\n      \"Prompt\": \"Include cube rules?
+                (Boolean Yes = 1)\",\n      \"Value\": 1,\n      \"Type\":
+                \"Numeric\"\n    },\n    {\n      \"Name\":
+                \"pIncludeData\",\n      \"Prompt\": \"Include cube data?
+                (Boolean Yes = 1)\",\n      \"Value\": 0,\n      \"Type\":
+                \"Numeric\"\n    },\n    {\n      \"Name\":
+                \"pSourceView\",\n      \"Prompt\": \"Source View (blank = whole
+                cube If pIncludeData=1)\",\n      \"Value\": \"\",\n     
+                \"Type\": \"String\"\n    },\n    {\n      \"Name\":
+                \"pRuleValues\",\n      \"Prompt\": \"Skip rule values?
+                (1=skip)\",\n      \"Value\": 1,\n      \"Type\":
+                \"Numeric\"\n    },\n    {\n      \"Name\": \"pDebug\",\n     
+                \"Prompt\": \"Debug Mode\",\n      \"Value\": 0,\n     
+                \"Type\": \"Numeric\"\n    }\n  ],\n  \"Variables\": [\n   
+                {\n      \"Name\": \"v1\",\n      \"Type\": \"String\",\n     
+                \"Position\": 1,\n      \"StartByte\": 0,\n      \"EndByte\":
+                0\n    },\n    {\n      \"Name\": \"v2\",\n      \"Type\":
+                \"String\",\n      \"Position\": 2,\n      \"StartByte\":
+                0,\n      \"EndByte\": 0\n    },\n    {\n      \"Name\":
+                \"v3\",\n      \"Type\": \"String\",\n      \"Position\":
+                3,\n      \"StartByte\": 0,\n      \"EndByte\": 0\n    },\n   
+                {\n      \"Name\": \"v4\",\n      \"Type\": \"String\",\n     
+                \"Position\": 4,\n      \"StartByte\": 0,\n      \"EndByte\":
+                0\n    },\n    {\n      \"Name\": \"v5\",\n      \"Type\":
+                \"String\",\n      \"Position\": 5,\n      \"StartByte\":
+                0,\n      \"EndByte\": 0\n    },\n    {\n      \"Name\":
+                \"v6\",\n      \"Type\": \"String\",\n      \"Position\":
+                6,\n      \"StartByte\": 0,\n      \"EndByte\": 0\n    },\n   
+                {\n      \"Name\": \"v7\",\n      \"Type\": \"String\",\n     
+                \"Position\": 7,\n      \"StartByte\": 0,\n      \"EndByte\":
+                0\n    },\n    {\n      \"Name\": \"v8\",\n      \"Type\":
+                \"String\",\n      \"Position\": 8,\n      \"StartByte\":
+                0,\n      \"EndByte\": 0\n    },\n    {\n      \"Name\":
+                \"v9\",\n      \"Type\": \"String\",\n      \"Position\":
+                9,\n      \"StartByte\": 0,\n      \"EndByte\": 0\n    },\n   
+                {\n      \"Name\": \"v10\",\n      \"Type\": \"String\",\n     
+                \"Position\": 10,\n      \"StartByte\": 0,\n      \"EndByte\":
+                0\n    },\n    {\n      \"Name\": \"v11\",\n      \"Type\":
+                \"String\",\n      \"Position\": 11,\n      \"StartByte\":
+                0,\n      \"EndByte\": 0\n    },\n    {\n      \"Name\":
+                \"v12\",\n      \"Type\": \"String\",\n      \"Position\":
+                12,\n      \"StartByte\": 0,\n      \"EndByte\": 0\n    },\n   
+                {\n      \"Name\": \"v13\",\n      \"Type\": \"String\",\n     
+                \"Position\": 13,\n      \"StartByte\": 0,\n      \"EndByte\":
+                0\n    },\n    {\n      \"Name\": \"v14\",\n      \"Type\":
+                \"String\",\n      \"Position\": 14,\n      \"StartByte\":
+                0,\n      \"EndByte\": 0\n    },\n    {\n      \"Name\":
+                \"v15\",\n      \"Type\": \"String\",\n      \"Position\":
+                15,\n      \"StartByte\": 0,\n      \"EndByte\": 0\n    },\n   
+                {\n      \"Name\": \"v16\",\n      \"Type\": \"String\",\n     
+                \"Position\": 16,\n      \"StartByte\": 0,\n      \"EndByte\":
+                0\n    },\n    {\n      \"Name\": \"v17\",\n      \"Type\":
+                \"String\",\n      \"Position\": 17,\n      \"StartByte\":
+                0,\n      \"EndByte\": 0\n    },\n    {\n      \"Name\":
+                \"v18\",\n      \"Type\": \"String\",\n      \"Position\":
+                18,\n      \"StartByte\": 0,\n      \"EndByte\": 0\n    },\n   
+                {\n      \"Name\": \"v19\",\n      \"Type\": \"String\",\n     
+                \"Position\": 19,\n      \"StartByte\": 0,\n      \"EndByte\":
+                0\n    },\n    {\n      \"Name\": \"v20\",\n      \"Type\":
+                \"String\",\n      \"Position\": 20,\n      \"StartByte\":
+                0,\n      \"EndByte\": 0\n    },\n    {\n      \"Name\":
+                \"v21\",\n      \"Type\": \"String\",\n      \"Position\":
+                21,\n      \"StartByte\": 0,\n      \"EndByte\": 0\n    },\n   
+                {\n      \"Name\": \"v22\",\n      \"Type\": \"String\",\n     
+                \"Position\": 22,\n      \"StartByte\": 0,\n      \"EndByte\":
+                0\n    },\n    {\n      \"Name\": \"v23\",\n      \"Type\":
+                \"String\",\n      \"Position\": 23,\n      \"StartByte\":
+                0,\n      \"EndByte\": 0\n    },\n    {\n      \"Name\":
+                \"v24\",\n      \"Type\": \"String\",\n      \"Position\":
+                24,\n      \"StartByte\": 0,\n      \"EndByte\": 0\n    },\n   
+                {\n      \"Name\": \"v25\",\n      \"Type\": \"String\",\n     
+                \"Position\": 25,\n      \"StartByte\": 0,\n      \"EndByte\":
+                0\n    },\n    {\n      \"Name\": \"V26\",\n      \"Type\":
+                \"String\",\n      \"Position\": 26,\n      \"StartByte\":
+                0,\n      \"EndByte\": 0\n    },\n    {\n      \"Name\":
+                \"V27\",\n      \"Type\": \"String\",\n      \"Position\":
+                27,\n      \"StartByte\": 0,\n      \"EndByte\": 0\n    },\n   
+                {\n      \"Name\": \"V28\",\n      \"Type\": \"String\",\n     
+                \"Position\": 28,\n      \"StartByte\": 0,\n      \"EndByte\":
+                0\n    }\n  ],\n  \"Attributes\": {\n    \"Caption\":
+                \"Bedrock.Cube.Clone\"\n  }\n}"
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Processes('z TEMP 10'):
+    delete:
+      tags:
+        - Processes
+      summary: Process Delete
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Chores('{choreName}')/tm1.Execute:
+    post:
+      tags:
+        - Chores
+      summary: Chore Execute
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: '""'
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: choreName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Chores('{choreName}'):
+    patch:
+      tags:
+        - Chores
+      summary: Chore Update
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n    \"@odata.context\": \"$metadata#Chores/$entity\",\n   
+                \"@odata.etag\": \"W/\\\"78865\\\"\",\n    \"Name\":
+                \"CXTM1SaveDataAll\",\n    \"StartTime\":
+                \"2011-02-16T11:00Z\",\n    \"DSTSensitive\": false,\n   
+                \"Active\": false,\n    \"ExecutionMode\":
+                \"SingleCommit\",\n    \"Frequency\": \"P0DT00H00M10S\"\n}"
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: choreName
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Configuration:
+    get:
+      tags:
+        - Administration
+      summary: Configuration
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/$metadata:
+    get:
+      tags:
+        - Administration
+      summary: Metadata
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Threads:
+    get:
+      tags:
+        - Administration
+      summary: Threads Get
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: $expand
+          in: query
+          schema:
+            type: string
+          example: Session
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/MessageLogEntries:
+    get:
+      tags:
+        - Administration
+      summary: Message Log Top 5
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: Prefer
+          in: header
+          schema:
+            type: string
+          example: odata.track-changes
+        - name: $orderby
+          in: query
+          schema:
+            type: string
+          example: ID desc
+        - name: $top
+          in: query
+          schema:
+            type: integer
+          example: '5'
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Processes('Cub.GeneralLedger.Demo')/ErrorLogs('2017-02-14T01:26:44Z')/Content:
+    get:
+      tags:
+        - Administration
+      summary: Process Error Logs
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  //{serverName}:{httpPortNumber}/api/v1/Sessions:
+    get:
+      tags:
+        - Administration
+      summary: Sessions Get
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Basic YWRtaW46
+        - name: $expand
+          in: query
+          schema:
+            type: string
+          example: User
+        - name: serverName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: httpPortNumber
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
